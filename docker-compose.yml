@@ -1,0 +1,83 @@
+version: "3"
+services:
+  workspace:
+    build:
+      context: ./docker/workspace
+      args:
+        - USERID=${USERID}
+        - GROUPID=${GROUPID}
+        - USER_NAME=${USER_NAME}
+        - GROUP_NAME=${GROUP_NAME}
+    tty: true
+    volumes:
+      - ./projects:/projects
+    networks:
+      - webnetwork
+
+  redisdb:
+     build:
+        context: ./docker/redis
+     volumes:
+        - ./docker/redis/data:/data
+     networks:
+      - webnetwork
+  nginx:
+     build:
+       context: ./docker/nginx
+       args:
+        - USERID=${USERID}
+        - GROUPID=${GROUPID}
+        - USER_NAME=${USER_NAME}
+        - GROUP_NAME=${GROUP_NAME}
+     restart: always
+     ports:
+       - 80:80
+       - 443:443
+     volumes:
+        - ./projects:/projects
+        - ./docker/nginx/sites:/etc/nginx/conf.d
+     depends_on:
+        - phpfpm
+        - redisdb
+        - db
+     networks:
+        - webnetwork
+  db:
+    build:
+      context: ./docker/db
+    restart: always
+    environment:
+       MYSQL_ROOT_PASSWORD: dbpassword
+    networks:
+      - webnetwork
+    volumes:
+      - ./docker/db/data:/var/lib/mysql
+
+  phpfpm:
+    build: 
+      context: ./docker/phpfpm
+      args:
+        - USERID=${USERID}
+        - GROUPID=${GROUPID}
+        - USER_NAME=${USER_NAME}
+        - GROUP_NAME=${GROUP_NAME}
+    volumes:
+      - ./projects:/projects
+      - ./.key/id_rsa:/home/${USER_NAME}/.ssh/id_rsa
+    networks:
+      - webnetwork
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+       MONGO_INITDB_ROOT_USERNAME: root
+       MONGO_INITDB_ROOT_PASSWORD: dbpassword
+    volumes:
+      - ./docker/mongo/data:/data/db
+    networks:
+      - webnetwork
+
+networks:
+  webnetwork:
+    driver: bridge

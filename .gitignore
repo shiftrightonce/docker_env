@@ -1,0 +1,4 @@
+projects/*
+.vagrant/*
+homestead/*
+.key/*
