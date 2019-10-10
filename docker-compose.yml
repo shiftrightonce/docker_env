@@ -41,7 +41,11 @@ services:
         - redisdb
         - db
      networks:
-        - webnetwork
+        webnetwork:
+#            aliases:
+#                - moodle.test
+#                - fd.test
+              
   db:
     build:
       context: ./docker/db
@@ -54,7 +58,7 @@ services:
       - ./docker/db/data:/var/lib/mysql
 
   phpfpm:
-    build: 
+    build:
       context: ./docker/phpfpm
       args:
         - USERID=${USERID}
@@ -63,7 +67,7 @@ services:
         - GROUP_NAME=${GROUP_NAME}
     volumes:
       - ./projects:/projects
-      - ./.key/id_rsa:/home/${USER_NAME}/.ssh/id_rsa
+      - ./.key/:/home/${USER_NAME}/.ssh
     networks:
       - webnetwork
 
@@ -75,6 +79,13 @@ services:
        MONGO_INITDB_ROOT_PASSWORD: dbpassword
     volumes:
       - ./docker/mongo/data:/data/db
+    networks:
+      - webnetwork
+  mail:
+    image: mailhog/mailhog
+    ports:
+      - 1025:1025
+      - 8025:8025
     networks:
       - webnetwork
 
