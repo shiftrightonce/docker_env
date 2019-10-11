@@ -42,9 +42,9 @@ services:
         - db
      networks:
         webnetwork:
-#            aliases:
-#                - moodle.test
-#                - fd.test
+            aliases:
+                - moodle.test
+                - fd.test
               
   db:
     build:
