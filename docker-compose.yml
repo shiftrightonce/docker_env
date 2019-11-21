@@ -13,6 +13,7 @@ services:
       - ./projects:/projects
     networks:
       - webnetwork
+    hostname: workspace
 
   redisdb:
      build:
@@ -21,6 +22,8 @@ services:
         - ./docker/redis/data:/data
      networks:
       - webnetwork
+     hostname: redisdb
+      
   nginx:
      build:
        context: ./docker/nginx
@@ -45,6 +48,7 @@ services:
             aliases:
                 - moodle.test
                 - fd.test
+     hostname: nginx
               
   db:
     build:
@@ -56,6 +60,7 @@ services:
       - webnetwork
     volumes:
       - ./docker/db/data:/var/lib/mysql
+    hostname: mariadb
 
   phpfpm:
     build:
@@ -70,6 +75,7 @@ services:
       - ./.key/:/home/${USER_NAME}/.ssh
     networks:
       - webnetwork
+    hostname: phpfpm
 
   mongo:
     image: mongo
@@ -81,6 +87,8 @@ services:
       - ./docker/mongo/data:/data/db
     networks:
       - webnetwork
+    hostname: mongodb
+
   mail:
     image: mailhog/mailhog
     ports:
@@ -88,6 +96,13 @@ services:
       - 8025:8025
     networks:
       - webnetwork
+    hostname: mailhog
+  nodejs:
+    build: 
+      context: ./docker/nodejs
+    volumes:
+      - ./projects:/projects
+    hostname: nodejs
 
 networks:
   webnetwork:
