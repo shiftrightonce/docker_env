@@ -47,7 +47,7 @@ services:
         webnetwork:
             aliases:
                 - moodle.test
-                - fd.test
+                - api.test
      hostname: nginx
               
   db:
