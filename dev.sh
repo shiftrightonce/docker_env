@@ -9,7 +9,7 @@ then
       mkdir -p projects
       cp /home/${USER}/.ssh/id_rsa ./.key/id_rsa
       printf "USERID=$(id -u)\nGROUPID=$(id -g)\nUSER_NAME=devuser\nGROUP_NAME=devgroup" >> .env
-      sudo docker-compose build
+      docker-compose build
    fi
 else
     echo "---> Quick help <----"
