@@ -11,11 +11,11 @@ USER root
 RUN groupadd -g ${GROUPID} ${GROUP_NAME} && \
     useradd -u ${USERID} -g ${GROUPID} -m ${USER_NAME}
 
-
-RUN apt-get update && apt-get -y install curl zip git nodejs npm gnupg sendmail
+RUN apt-get update && apt-get -y install curl zip git gnupg sendmail
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update && apt-get install -y  yarn libxml2-dev zlib1g-dev libzip-dev
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get update && apt-get install -y nodejs yarn libxml2-dev zlib1g-dev libzip-dev
 RUN docker-php-ext-install pdo_mysql mysqli soap xml zip intl xmlrpc opcache
 
 RUN apt-get update && apt-get install -y \
