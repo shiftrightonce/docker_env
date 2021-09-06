@@ -77,6 +77,21 @@ services:
       - webnetwork
     hostname: phpfpm
 
+  php7.2:
+    build:
+      context: ./docker/php7.2
+      args:
+        - USERID=${USERID}
+        - GROUPID=${GROUPID}
+        - USER_NAME=${USER_NAME}
+        - GROUP_NAME=${GROUP_NAME}
+    volumes:
+      - ./projects:/projects
+      - ./.key/:/home/${USER_NAME}/.ssh
+    networks:
+      - webnetwork
+    hostname: php7.2
+
   mongo:
     image: mongo
     restart: always
