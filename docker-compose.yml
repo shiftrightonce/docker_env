@@ -77,7 +77,7 @@ services:
       - webnetwork
     hostname: phpfpm
 
-  php7.2:
+  php72:
     build:
       context: ./docker/php7.2
       args:
@@ -90,7 +90,7 @@ services:
       - ./.key/:/home/${USER_NAME}/.ssh
     networks:
       - webnetwork
-    hostname: php7.2
+    hostname: php72
 
   mongo:
     image: mongo
