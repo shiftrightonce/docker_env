@@ -1,6 +1,6 @@
 FROM node:lts
 
-WORKDIR /project
+WORKDIR /projects
 
 ENTRYPOINT ["tail"]
 CMD ["-f","/dev/null"]

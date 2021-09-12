@@ -23,7 +23,7 @@ services:
      networks:
       - webnetwork
      hostname: redisdb
-      
+
   nginx:
      build:
        context: ./docker/nginx
@@ -49,7 +49,7 @@ services:
                 - moodle.test
                 - api.test
      hostname: nginx
-              
+
   db:
     build:
       context: ./docker/db
@@ -61,6 +61,21 @@ services:
     volumes:
       - ./docker/db/data:/var/lib/mysql
     hostname: mariadb
+
+  py:
+    build:
+      context: ./docker/python
+      args:
+        - USERID=${USERID}
+        - GROUPID=${GROUPID}
+        - USER_NAME=${USER_NAME}
+        - GROUP_NAME=${GROUP_NAME}
+    volumes:
+      - ./projects:/projects
+      - ./.key/:/home/${USER_NAME}/.ssh
+    networks:
+      - webnetwork
+    hostname: py
 
   phpfpm:
     build:
@@ -113,7 +128,7 @@ services:
       - webnetwork
     hostname: mailhog
   nodejs:
-    build: 
+    build:
       context: ./docker/nodejs
     volumes:
       - ./projects:/projects
