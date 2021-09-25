@@ -106,6 +106,21 @@ services:
     networks:
       - webnetwork
     hostname: php72
+  
+  dotnet:
+    build:
+      context: ./docker/dotnet
+      args:
+        - USERID=${USERID}
+        - GROUPID=${GROUPID}
+        - USER_NAME=${USER_NAME}
+        - GROUP_NAME=${GROUP_NAME}
+    volumes:
+      - ./projects:/projects
+      - ./.key/:/home/${USER_NAME}/.ssh
+    networks:
+      - webnetwork
+    hostname: dotnet
 
   mongo:
     image: mongo
@@ -127,6 +142,7 @@ services:
     networks:
       - webnetwork
     hostname: mailhog
+
   nodejs:
     build:
       context: ./docker/nodejs
