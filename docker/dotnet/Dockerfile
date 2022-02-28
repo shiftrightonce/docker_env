@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:6.0.0-rc.1-focal-amd64
+FROM mcr.microsoft.com/dotnet/sdk
 
 ARG GROUPID
 ARG USERID
