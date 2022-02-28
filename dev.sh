@@ -8,7 +8,7 @@ then
       mkdir -p .key
       mkdir -p projects
       cp /home/${USER}/.ssh/id_rsa ./.key/id_rsa
-      printf "USERID=$(id -u)\nGROUPID=$(id -g)\nUSER_NAME=devuser\nGROUP_NAME=devgroup" >> .env
+      cp .env.example .env
       docker-compose build
    fi
 else
