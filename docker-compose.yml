@@ -34,8 +34,8 @@ services:
         - GROUP_NAME=${GROUP_NAME}
      restart: always
      ports:
-       - 80:80
-       - 443:443
+       - ${HTTP_PORT}:80
+       - ${HTTPS_PORT}:443
      volumes:
         - ./projects:/projects
         - ./docker/nginx/sites:/etc/nginx/conf.d
@@ -43,6 +43,7 @@ services:
         - phpfpm
         - redisdb
         - db
+        - adminer
      networks:
         webnetwork:
             aliases:
@@ -55,13 +56,28 @@ services:
       context: ./docker/db
     restart: always
     environment:
-       MYSQL_ROOT_PASSWORD: dbpassword
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-dbpassword}
+      - MYSQL_USER=${MYSQL_USER:-dbuser}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-dbuser}
     networks:
       - webnetwork
     volumes:
       - ./docker/db/data:/var/lib/mysql
     hostname: mariadb
 
+  postgres:
+    build:
+       context: ./docker/postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-dbpassword}
+      - POSTGRES_USER=${POSTGRES_USER:-dbuser}
+    networks:
+      - webnetwork
+    volumes:
+      - ./docker/postgres/data:/var/lib/postgresql/data
+    hostname: postgres
+  
   py:
     build:
       context: ./docker/python
@@ -91,22 +107,7 @@ services:
     networks:
       - webnetwork
     hostname: phpfpm
-
-  php72:
-    build:
-      context: ./docker/php7.2
-      args:
-        - USERID=${USERID}
-        - GROUPID=${GROUPID}
-        - USER_NAME=${USER_NAME}
-        - GROUP_NAME=${GROUP_NAME}
-    volumes:
-      - ./projects:/projects
-      - ./.key/:/home/${USER_NAME}/.ssh
-    networks:
-      - webnetwork
-    hostname: php72
-  
+ 
   dotnet:
     build:
       context: ./docker/dotnet
@@ -126,8 +127,9 @@ services:
     image: mongo
     restart: always
     environment:
-       MONGO_INITDB_ROOT_USERNAME: root
-       MONGO_INITDB_ROOT_PASSWORD: dbpassword
+      - MONGODB_ROOT_PASSWORD=${MONGODB_ROOT_PASSWORD:-dbpassword}
+      - MONGODB_USERNAME=${MONGODB_USERNAME:-dbuser}
+      - MONGODB_PASSWORD=${MONGODB_PASSWORD:-dbpassword}
     volumes:
       - ./docker/mongo/data:/data/db
     networks:
@@ -137,11 +139,17 @@ services:
   mail:
     image: mailhog/mailhog
     ports:
-      - 1025:1025
-      - 8025:8025
+      - ${MAILHOG_PORT:-1025}:1025
+      - ${MAILHOG_UI:-8025}:8025
     networks:
       - webnetwork
     hostname: mailhog
+  
+  adminer:
+    image: adminer:fastcgi
+    networks:
+      - webnetwork
+    hostname: adminer
 
   nodejs:
     build:
@@ -149,7 +157,44 @@ services:
     volumes:
       - ./projects:/projects
     hostname: nodejs
+    ports:
+      - ${NODE_PORT}:8080
+
+  minio:
+    build:
+      context: './docker/minio'
+    volumes:
+      - ./docker/minio/data:/data
+    ports:
+      - ${MINIO_PORT}:9000
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minio}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minio123}
+    networks:
+      - webnetwork
+    hostname: minio
+    command: server /data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  meilisearch:
+    image: 'getmeili/meilisearch:latest'
+    environment:
+       - MEILI_MASTER_KEY=${MEILI_MASTER_KEY:-meilimaster123}
+       - MEILI_ENV=${MEILI_ENV:-production}
+    volumes:
+     - ./docker/meilisearch/data:/data.ms
+    networks:
+      - webnetwork
+    ports:
+     - ${MEILI_PORT:-7700}:7700
+    hostname: meilisearch
+
 
 networks:
   webnetwork:
+    name: ${NETWORK_NAME:-dev_network}
     driver: bridge
