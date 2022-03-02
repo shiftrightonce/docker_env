@@ -5,6 +5,7 @@ build/
 tmp/
 temp/
 .env
+.key/
 devtools/adminer
 docker/db/data
 docker/meilisearch
