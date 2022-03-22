@@ -16,7 +16,7 @@ RUN apt-get update && apt-get -y install curl zip git gnupg
 
 WORKDIR /projects
 
-USER ${USERID}
+USER ${USER_NAME}
 
 ENTRYPOINT ["tail"]
 CMD ["-f","/dev/null"]
