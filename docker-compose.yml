@@ -175,7 +175,7 @@ services:
     networks:
       - webnetwork
     hostname: minio
-    command: server /data
+    command: server --address 0.0.0.0:9000 --console-address ":9001" /data
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
