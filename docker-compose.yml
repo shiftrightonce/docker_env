@@ -172,6 +172,8 @@ services:
     environment:
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minio}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minio123}
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minio123}
     networks:
       - webnetwork
     hostname: minio
