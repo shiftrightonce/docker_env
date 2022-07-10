@@ -108,6 +108,20 @@ services:
       - webnetwork
     hostname: phpfpm
  
+  deno:
+    build:
+      context: ./docker/deno
+      args:
+        - USERID=${USERID}
+        - GROUPID=${GROUPID}
+        - USER_NAME=${USER_NAME}
+        - GROUP_NAME=${GROUP_NAME}
+    volumes:
+      - ./projects:/projects
+      - ./.key/:/home/${USER_NAME}/.ssh
+    networks:
+      - webnetwork
+    hostname: phpfpm
   dotnet:
     build:
       context: ./docker/dotnet
