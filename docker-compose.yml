@@ -121,7 +121,7 @@ services:
       - ./.key/:/home/${USER_NAME}/.ssh
     networks:
       - webnetwork
-    hostname: phpfpm
+    hostname: deno
   dotnet:
     build:
       context: ./docker/dotnet
