@@ -8,6 +8,7 @@ temp/
 .key/
 devtools/adminer
 docker/db/data
+docker/surrealdb/data
 docker/meilisearch
 docker/minio/data
 docker/mongo/data

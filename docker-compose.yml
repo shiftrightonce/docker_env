@@ -65,6 +65,26 @@ services:
       - ./docker/db/data:/var/lib/mysql
     hostname: mariadb
 
+  surrealdb:
+    build:
+      context: ./docker/surrealdb
+    restart: always
+    ports:
+      - ${SURREAL_PORT}:8000
+    entrypoint:
+      - /surreal
+      - start
+      - -u
+      - root
+      - -p
+      - ${SURREAL_ROOT_PASSWORD:-root}
+      - file://data
+    networks:
+      - webnetwork
+    volumes:
+      - ./docker/surrealdb/data:/data
+    hostname: surrealdb
+
   postgres:
     build:
        context: ./docker/postgres
