@@ -113,6 +113,23 @@ services:
       - webnetwork
     hostname: py
 
+  rust:
+    build:
+      context: ./docker/rust
+      args:
+        - USERID=${USERID}
+        - GROUPID=${GROUPID}
+        - USER_NAME=${USER_NAME}
+        - GROUP_NAME=${GROUP_NAME}
+    volumes:
+      - ./projects:/projects
+      - ./.key/:/home/${USER_NAME}/.ssh
+    ports:
+      - ${RUST_PORT}:8080
+    networks:
+      - webnetwork
+    hostname: rust
+
   phpfpm:
     build:
       context: ./docker/phpfpm
