@@ -14,7 +14,6 @@ WORKDIR /projects
 
 USER ${USER_NAME}
 
-RUN cargo install cargo-edit
 RUN cargo install cargo-watch
 RUN cargo install cargo-audit
 RUN rustup component add rustfmt
