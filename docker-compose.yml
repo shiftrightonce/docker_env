@@ -2,7 +2,7 @@ version: "3"
 services:
   workspace:
     build:
-      context: ./docker/workspace
+      context: ./services/workspace
       args:
         - USERID=${USERID}
         - GROUPID=${GROUPID}
@@ -17,16 +17,16 @@ services:
 
   redisdb:
      build:
-        context: ./docker/redis
+        context: ./services/redis
      volumes:
-        - ./docker/redis/data:/data
+        - ./services/redis/data:/data
      networks:
       - webnetwork
      hostname: redisdb
 
   nginx:
      build:
-       context: ./docker/nginx
+       context: ./services/nginx
        args:
         - USERID=${USERID}
         - GROUPID=${GROUPID}
@@ -38,7 +38,7 @@ services:
        - ${HTTPS_PORT}:443
      volumes:
         - ./projects:/projects
-        - ./docker/nginx/sites:/etc/nginx/conf.d
+        - ./services/nginx/sites:/etc/nginx/conf.d
      depends_on:
         - phpfpm
         - redisdb
@@ -53,7 +53,7 @@ services:
 
   db:
     build:
-      context: ./docker/db
+      context: ./services/db
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-dbpassword}
@@ -62,12 +62,12 @@ services:
     networks:
       - webnetwork
     volumes:
-      - ./docker/db/data:/var/lib/mysql
+      - ./services/db/data:/var/lib/mysql
     hostname: mariadb
 
   surrealdb:
     build:
-      context: ./docker/surrealdb
+      context: ./services/surrealdb
     restart: always
     ports:
       - ${SURREAL_PORT}:8000
@@ -82,12 +82,12 @@ services:
     networks:
       - webnetwork
     volumes:
-      - ./docker/surrealdb/data:/data
+      - ./services/surrealdb/data:/data
     hostname: surrealdb
 
   postgres:
     build:
-       context: ./docker/postgres
+       context: ./services/postgres
     restart: always
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-dbpassword}
@@ -95,12 +95,12 @@ services:
     networks:
       - webnetwork
     volumes:
-      - ./docker/postgres/data:/var/lib/postgresql/data
+      - ./services/postgres/data:/var/lib/postgresql/data
     hostname: postgres
   
   py:
     build:
-      context: ./docker/python
+      context: ./services/python
       args:
         - USERID=${USERID}
         - GROUPID=${GROUPID}
@@ -115,7 +115,7 @@ services:
 
   rust:
     build:
-      context: ./docker/rust
+      context: ./services/rust
       args:
         - USERID=${USERID}
         - GROUPID=${GROUPID}
@@ -124,15 +124,15 @@ services:
     volumes:
       - ./projects:/projects
       - ./.key/:/home/${USER_NAME}/.ssh
-    ports:
-      - ${RUST_PORT}:8080
+    #ports:
+      #- ${RUST_PORT}:8080
     networks:
       - webnetwork
     hostname: rust
 
   phpfpm:
     build:
-      context: ./docker/phpfpm
+      context: ./services/phpfpm
       args:
         - USERID=${USERID}
         - GROUPID=${GROUPID}
@@ -147,7 +147,7 @@ services:
  
   deno:
     build:
-      context: ./docker/deno
+      context: ./services/deno
       args:
         - USERID=${USERID}
         - GROUPID=${GROUPID}
@@ -161,7 +161,7 @@ services:
     hostname: deno
   dotnet:
     build:
-      context: ./docker/dotnet
+      context: ./services/dotnet
       args:
         - USERID=${USERID}
         - GROUPID=${GROUPID}
@@ -182,7 +182,7 @@ services:
       - MONGODB_USERNAME=${MONGODB_USERNAME:-dbuser}
       - MONGODB_PASSWORD=${MONGODB_PASSWORD:-dbpassword}
     volumes:
-      - ./docker/mongo/data:/data/db
+      - ./services/mongo/data:/data/db
     networks:
       - webnetwork
     hostname: mongodb
@@ -204,7 +204,7 @@ services:
 
   nodejs:
     build:
-      context: ./docker/nodejs
+      context: ./services/nodejs
     volumes:
       - ./projects:/projects
     hostname: nodejs
@@ -215,9 +215,9 @@ services:
 
   minio:
     build:
-      context: './docker/minio'
+      context: './services/minio'
     volumes:
-      - ./docker/minio/data:/data
+      - ./services/minio/data:/data
     ports:
       - ${MINIO_PORT}:9000
     environment:
@@ -241,7 +241,7 @@ services:
        - MEILI_MASTER_KEY=${MEILI_MASTER_KEY:-meilimaster123}
        - MEILI_ENV=${MEILI_ENV:-production}
     volumes:
-     - ./docker/meilisearch/data:/data.ms
+     - ./services/meilisearch/data:/data.ms
     networks:
       - webnetwork
     ports:
