@@ -17,7 +17,7 @@ Dev environment using docker containers to run various servers and services
 - start/restart the contianers
 
 # Helpful info
-- To start the containers: while in this folder run **sudo docker-compose up** .
+- To start the containers: while in this folder run **sudo docker compose up** .
   This command will run docker in the foreground. 
 - Connecting your application to mariadb server
    - host: db
