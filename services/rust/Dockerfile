@@ -22,9 +22,10 @@ WORKDIR /projects
 RUN cargo install cargo-watch
 RUN cargo install cargo-audit
 RUN cargo install cargo-expand
-RUN cargo install mdbook
-RUN cargo install release
+RUN cargo install cargo-release
 RUN cargo install cargo-smart-release
+RUN cargo install git-cliff
+RUN cargo install mdbook
 RUN rustup component add rustfmt
 RUN rustup component add clippy
 
