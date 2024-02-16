@@ -4,7 +4,7 @@ Dev environment using docker containers to run various servers and services
 
 # Setup
 - Make sure docker is installed 
-- Run **dev.sh** setup
+- Run `dev.sh setup`
 - After the build is completed, a new directory will be created called **projects**
 - Clone or create your projects in this directory
 
