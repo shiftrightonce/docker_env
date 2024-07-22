@@ -7,6 +7,9 @@ ARG USER_NAME
 
 USER root
 
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install cmake -y
+
 RUN groupadd -g ${GROUPID} ${GROUP_NAME} && \
     useradd -u ${USERID} -g ${GROUPID} -m ${USER_NAME}
 
