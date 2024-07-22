@@ -77,7 +77,7 @@ services:
       - root
       - -p
       - ${SURREAL_ROOT_PASSWORD:-root}
-      - file://data
+      - file:/data/mydata.db
     networks:
       - webnetwork
     volumes:
