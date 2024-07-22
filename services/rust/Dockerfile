@@ -1,4 +1,4 @@
-FROM rust:latest
+FROM rust:bullseye
 
 ARG GROUPID
 ARG USERID
