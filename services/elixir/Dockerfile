@@ -1,0 +1,34 @@
+FROM erlang:27
+
+# elixir expects utf8.
+ENV ELIXIR_VERSION="v1.17.2" \
+	LANG=C.UTF-8
+
+ARG GROUPID
+ARG USERID
+ARG GROUP_NAME
+ARG USER_NAME
+
+USER root
+
+RUN groupadd -g ${GROUPID} ${GROUP_NAME} && \
+    useradd -u ${USERID} -g ${GROUPID} -m ${USER_NAME}
+
+RUN set -xe \
+	&& ELIXIR_DOWNLOAD_URL="https://github.com/elixir-lang/elixir/archive/${ELIXIR_VERSION}.tar.gz" \
+	&& ELIXIR_DOWNLOAD_SHA256="7bb8e6414b77c1707f39f620a2ad54f68d64846d663ec78069536854247fb1ab" \
+	&& curl -fSL -o elixir-src.tar.gz $ELIXIR_DOWNLOAD_URL \
+	&& echo "$ELIXIR_DOWNLOAD_SHA256  elixir-src.tar.gz" | sha256sum -c - \
+	&& mkdir -p /usr/local/src/elixir \
+	&& tar -xzC /usr/local/src/elixir --strip-components=1 -f elixir-src.tar.gz \
+	&& rm elixir-src.tar.gz \
+	&& cd /usr/local/src/elixir \
+	&& make install clean \
+	&& find /usr/local/src/elixir/ -type f -not -regex "/usr/local/src/elixir/lib/[^\/]*/lib.*" -exec rm -rf {} + \
+	&& find /usr/local/src/elixir/ -type d -depth -empty -delete
+
+WORKDIR /projects
+
+USER ${USERID}
+
+CMD ["tail", "-f","/dev/null"]
