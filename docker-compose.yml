@@ -15,40 +15,40 @@ services:
     hostname: workspace
 
   redisdb:
-     build:
-        context: ./services/redis
-     volumes:
-        - ./services/redis/data:/data
-     networks:
+    build:
+      context: ./services/redis
+    volumes:
+      - ./services/redis/data:/data
+    networks:
       - webnetwork
-     hostname: redisdb
+    hostname: redisdb
 
   nginx:
-     build:
-       context: ./services/nginx
-       args:
+    build:
+      context: ./services/nginx
+      args:
         - USERID=${USERID}
         - GROUPID=${GROUPID}
         - USER_NAME=${USER_NAME}
         - GROUP_NAME=${GROUP_NAME}
-     restart: always
-     ports:
-       - ${HTTP_PORT}:80
-       - ${HTTPS_PORT}:443
-     volumes:
-        - ./projects:/projects
-        - ./services/nginx/sites:/etc/nginx/conf.d
-     depends_on:
-        - phpfpm
-        - redisdb
-        - db
-        - adminer
-     networks:
-        webnetwork:
-            aliases:
-                - moodle.test
-                - api.test
-     hostname: nginx
+    restart: always
+    ports:
+      - ${HTTP_PORT}:80
+      - ${HTTPS_PORT}:443
+    volumes:
+      - ./projects:/projects
+      - ./services/nginx/sites:/etc/nginx/conf.d
+    depends_on:
+      - phpfpm
+      - redisdb
+      - db
+      - adminer
+    networks:
+      webnetwork:
+        aliases:
+          - moodle.test
+          - api.test
+    hostname: nginx
 
   db:
     build:
@@ -86,7 +86,7 @@ services:
 
   postgres:
     build:
-       context: ./services/postgres
+      context: ./services/postgres
     restart: always
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-dbpassword}
@@ -96,7 +96,7 @@ services:
     volumes:
       - ./services/postgres/data:/var/lib/postgresql/data
     hostname: postgres
-  
+
   py:
     build:
       context: ./services/python
@@ -123,8 +123,8 @@ services:
     volumes:
       - ./projects:/projects
       - ./.key/:/home/${USER_NAME}/.ssh
-    #ports:
-      #- ${RUST_PORT}:8080
+    # ports:
+    #   - ${RUST_PORT}:8080
     networks:
       - webnetwork
     hostname: rust
@@ -143,7 +143,22 @@ services:
     networks:
       - webnetwork
     hostname: phpfpm
- 
+
+  elixir:
+    build:
+      context: ./services/elixir
+      args:
+        - USERID=${USERID}
+        - GROUPID=${GROUPID}
+        - USER_NAME=${USER_NAME}
+        - GROUP_NAME=${GROUP_NAME}
+    volumes:
+      - ./projects:/projects
+      - ./.key/:/home/${USER_NAME}/.ssh
+    networks:
+      - webnetwork
+    hostname: elixir
+
   deno:
     build:
       context: ./services/deno
@@ -158,6 +173,7 @@ services:
     networks:
       - webnetwork
     hostname: deno
+
   dotnet:
     build:
       context: ./services/dotnet
@@ -194,7 +210,7 @@ services:
     networks:
       - webnetwork
     hostname: mailhog
-  
+
   adminer:
     image: adminer
     networks:
@@ -214,7 +230,7 @@ services:
 
   minio:
     build:
-      context: './services/minio'
+      context: "./services/minio"
     volumes:
       - ./services/minio/data:/data
     ports:
@@ -235,18 +251,17 @@ services:
       retries: 3
 
   meilisearch:
-    image: 'getmeili/meilisearch:latest'
+    image: "getmeili/meilisearch:latest"
     environment:
-       - MEILI_MASTER_KEY=${MEILI_MASTER_KEY:-meilimaster123}
-       - MEILI_ENV=${MEILI_ENV:-production}
+      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY:-meilimaster123}
+      - MEILI_ENV=${MEILI_ENV:-production}
     volumes:
-     - ./services/meilisearch/data:/data.ms
+      - ./services/meilisearch/data:/data.ms
     networks:
       - webnetwork
     ports:
-     - ${MEILI_PORT:-7700}:7700
+      - ${MEILI_PORT:-7700}:7700
     hostname: meilisearch
-
 
 networks:
   webnetwork:
