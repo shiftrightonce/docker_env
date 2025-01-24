@@ -164,6 +164,7 @@ services:
         - GROUP_NAME=${GROUP_NAME}
     volumes:
       - ./projects:/projects
+      - ./services/deno/.cache:/deno-dir
       - ./.key/:/home/${USER_NAME}/.ssh
     networks:
       - webnetwork
