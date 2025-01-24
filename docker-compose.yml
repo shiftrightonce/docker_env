@@ -2,11 +2,6 @@ services:
   workspace:
     build:
       context: ./services/workspace
-      args:
-        - USERID=${USERID}
-        - GROUPID=${GROUPID}
-        - USER_NAME=${USER_NAME}
-        - GROUP_NAME=${GROUP_NAME}
     tty: true
     volumes:
       - ./projects:/projects
