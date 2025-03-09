@@ -82,7 +82,7 @@ services:
       - root
       - -p
       - ${SURREAL_ROOT_PASSWORD:-root}
-      - file:/data/mydata.db
+      - rocksdb:/data/mydata.db
     networks:
       - webnetwork
     volumes:
