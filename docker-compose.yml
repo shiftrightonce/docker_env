@@ -35,9 +35,6 @@ services:
       - ./services/nginx/sites:/etc/nginx/conf.d
     depends_on:
       - phpfpm
-      - redisdb
-      - db
-      - adminer
     networks:
       webnetwork:
         aliases:
@@ -58,6 +55,19 @@ services:
     volumes:
       - ./services/db/data:/var/lib/mysql
     hostname: mariadb
+  mysql:
+    build:
+      context: ./services/mysql
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-dbpassword}
+      - MYSQL_USER=${MYSQL_USER:-dbuser}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-dbuser}
+    networks:
+      - webnetwork
+    volumes:
+      - ./services/mysql/data:/var/lib/mysql
+    hostname: mysql
 
   surrealdb:
     build:
