@@ -8,6 +8,7 @@ temp/
 .key/
 devtools/adminer
 services/db/data
+services/mysql/data
 services/surrealdb/data
 services/meilisearch
 services/minio/data
