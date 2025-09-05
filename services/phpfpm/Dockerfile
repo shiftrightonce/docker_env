@@ -13,10 +13,8 @@ RUN groupadd -g ${GROUPID} ${GROUP_NAME} && \
 
 
 RUN apt-get update && apt-get -y install curl vim zip git nodejs npm gnupg sendmail libpq-dev
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update && apt-get install -y  yarn libxml2-dev zlib1g-dev libzip-dev
-RUN docker-php-ext-install pdo_mysql mysqli soap xml zip intl opcache pdo_pgsql
+RUN apt-get update && apt-get install -y libxml2-dev zlib1g-dev libzip-dev
+RUN docker-php-ext-install pdo_mysql mysqli xml zip pdo_pgsql
 
 RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
@@ -25,10 +23,6 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install -j$(nproc) iconv \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd
-
-RUN pecl install redis \
-    && pecl install mongodb \
-    && docker-php-ext-enable redis mongodb
 
 RUN echo 'memory_limit = 2G' >> /usr/local/etc/php/conf.d/docker-php-memlimit.ini
 RUN echo 'upload_max_filesize = 2G' >> /usr/local/etc/php/conf.d/docker-php-upload-size.ini
